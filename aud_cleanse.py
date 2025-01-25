@@ -29,6 +29,9 @@ for dataset in config["AUTDProjectFiles"]:
 
         df = pd.read_csv(input_file)
 
+        # Updates column headers for automation step
+        df.columns = [col.replace(" ", "_").replace(",", "_") for col in df.columns]
+
         # Converts dates from MM/DD/YYYY to the standardized YYYY-MM-DD format for consistency if needed
         if 'Date' in df.columns:
             try:
