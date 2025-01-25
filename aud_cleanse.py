@@ -22,8 +22,21 @@ for dataset in config["AUTDProjectFiles"]:
     try:
         print(f"Processing {input_file}...")
         
-        # Handles duplicate records, missing values left as null for better accuracy in future analysis
+        """
+        Handles duplicate records, missing values left as null for better accuracy in future analysis. 
+        Removes dollar signs where needed and reformats date so it can be read in SQL.
+        """
+
         df = pd.read_csv(input_file)
+
+        if 'Time' in df.columns:
+            df['Time'] = df['Time'].str.replace(r'\s*EDT$', '', regex=True)
+
+        # Addresses monetary columns and removes $ signs and commas
+        monetary_cols = [col for col in df.columns if df[col].astype(str).str.contains('\$').any()]
+        for col in monetary_cols:
+            df[col] = df[col].replace({'\$': '', ',': ''}, regex=True).astype(float)
+
         df = df.drop_duplicates()
         df.to_csv(output_file, index=False)
         print(f"Processed data saved to {output_file}\n")
