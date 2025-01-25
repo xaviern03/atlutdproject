@@ -29,6 +29,14 @@ for dataset in config["AUTDProjectFiles"]:
 
         df = pd.read_csv(input_file)
 
+        # Converts dates from MM/DD/YYYY to the standardized YYYY-MM-DD format for consistency if needed
+        if 'Date' in df.columns:
+            try:
+                df['Date'] = pd.to_datetime(df['Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
+            except ValueError:
+                print("")
+
+        # Address columns that have EDT at the end of the time   
         if 'Time' in df.columns:
             df['Time'] = df['Time'].str.replace(r'\s*EDT$', '', regex=True)
 
