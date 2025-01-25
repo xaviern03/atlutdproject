@@ -1,0 +1,15 @@
+{
+    "AUTDProjectFiles": [
+        {
+            "input_file": "american_soccer_analysis_mls_xgoals_games_2025-01-23",
+            "output_file": "processed_match_data_2025-01-23"
+        },
+        {
+            "input_file": "american_soccer_analysis_mls_salaries_players_2025-01-23",
+            "output_file": "processed_salary_data_2025-01-23"
+        }
+    ],
+    "raw_data_folder": "./raw_data/",
+    "processed_data_folder": "./processed_data/"
+}
+
