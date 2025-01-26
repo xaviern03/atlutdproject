@@ -3,78 +3,87 @@ import os
 import json
 
 # Loads configuration settings
-with open("config.json", "r") as file:
-    config = json.load(file)
+def load_config(file_path="config.json"):
+    with open("config.json", "r") as file:
+        return json.load(file)
 
-# Gets folder paths from configuration (config.json)
-raw_data_folder = config["raw_data_folder"]
-processed_data_folder = config["processed_data_folder"]
+#Clean specific columns
+def clean_data(df):
+    # Converts dates from MM/DD/YYYY to the standardized YYYY-MM-DD format for consistency if needed
+    if 'Date' in df.columns:
+        try:
+            df['Date'] = pd.to_datetime(df['Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
+        except ValueError:
+            print("")
 
-# Makes sure processed data folder exists
-if not os.path.exists(processed_data_folder):
-    os.makedirs(processed_data_folder)
+    # Address columns that have EDT at the end of the time   
+    if 'Time' in df.columns:
+        df['Time'] = df['Time'].str.replace(r'\s*EDT$', '', regex=True)
 
-mapping_file = "./processed_data/player_mapping.csv"
-if os.path.exists(mapping_file):
-    player_mapping = pd.read_csv(mapping_file).set_index("Player").to_dict()["player_id"]
-else:
-    player_mapping = {}
+    # Addresses monetary columns and removes $ signs and commas
+    monetary_cols = [col for col in df.columns if df[col].astype(str).str.contains('\$').any()]
+    for col in monetary_cols:
+        df[col] = df[col].replace({'\$': '', ',': ''}, regex=True).astype(float)
 
-# Processes each dataset for configuration
-for dataset in config["AUTDProjectFiles"]:
-    input_file = os.path.join(raw_data_folder, dataset["input_file"])
-    output_file = os.path.join(processed_data_folder, dataset["output_file"])
+    # Clean percentage columns, removing % and converting to float
+    percent_cols = [col for col in df.columns if df[col].astype(str).str.contains('%').any()]
+    for col in percent_cols:
+        df[col] = df[col].str.replace('%', '', regex=False).astype(float)
 
+    #Drop duplicates and empty columns
+    df = df.drop_duplicates()
+    df = df.dropna(axis=1, how='all')
+    
+    return df
+
+# Assign unique player IDs
+def assign_player_ids(df, unique_players):
+    new_players = {player: len(unique_players) + i + 1 for i, player in enumerate(df["Player"].unique()) if player not in unique_players}
+    unique_players.update(new_players)
+    df["player_id"] = df["Player"].map(unique_players)
+    return df
+
+# Process a single dataset
+def process_dataset(input_file, output_file, unique_players):
     try:
         print(f"Processing {input_file}...")
-        
-        """
-        Handles duplicate records, missing values left as null for better accuracy in future analysis. 
-        Removes dollar signs where needed and reformats date so it can be read in SQL.
-        """
-
         df = pd.read_csv(input_file)
+        
+    # Add unique player IDs
+        if "Player" in df.columns:
+            df = assign_player_ids(df, unique_players)
+        
+    # Clean the data
+        df = clean_data(df)
 
-        # Creates unique player id for each new player recognized and maps player names to the player's unique id number
-        if 'Player' in df.columns:
-            new_players = {player: len(player_mapping) + i + 1 for i, player in enumerate(df['Player'].unique()) if player not in player_mapping}
-            player_mapping.update(new_players)
-            df['player_id'] = df['Player'].map(player_mapping)
-
-        pd.DataFrame(list(player_mapping.items()), columns=["Player", "player_id"]).to_csv(mapping_file, index=False)
-
-        # Updates column headers for automation step delta tables
+    # Standardize column headers
         df.columns = [col.replace(" ", "_").replace(",", "_").replace("%", "_Percent") for col in df.columns]
 
-        # Converts dates from MM/DD/YYYY to the standardized YYYY-MM-DD format for consistency if needed
-        if 'Date' in df.columns:
-            try:
-                df['Date'] = pd.to_datetime(df['Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
-            except ValueError:
-                print("")
-
-        # Address columns that have EDT at the end of the time   
-        if 'Time' in df.columns:
-            df['Time'] = df['Time'].str.replace(r'\s*EDT$', '', regex=True)
-
-        # Addresses monetary columns and removes $ signs and commas
-        monetary_cols = [col for col in df.columns if df[col].astype(str).str.contains('\$').any()]
-        for col in monetary_cols:
-            df[col] = df[col].replace({'\$': '', ',': ''}, regex=True).astype(float)
-
-        # Clean percentage columns, removing % and converting to float
-        percent_cols = [col for col in df.columns if df[col].astype(str).str.contains('%').any()]
-        for col in percent_cols:
-            df[col] = df[col].str.replace('%', '', regex=False).astype(float)
-
+    # Drop duplicates
         df = df.drop_duplicates()
-        df = df.dropna(axis=1, how='all')
+
+    # Save to output
         df.to_csv(output_file, index=False)
         print(f"Processed data saved to {output_file}\n")
-
-
-    # Handles errors and leaves message for reasoning behind error.
-    except FileNotFoundError:
-        print(f"Error: {input_file} not found. Please ensure this file exists in the raw data folder.\n")
     except Exception as e:
         print(f"An error occurred while processing {input_file}: {e}\n")
+
+# Ensure necessary folders exist
+def ensure_directories(config):
+    raw_data_folder = config["raw_data_folder"]
+    processed_data_folder = config["processed_data_folder"]
+
+    if not os.path.exists(processed_data_folder):
+        os.makedirs(processed_data_folder)
+
+    return raw_data_folder, processed_data_folder
+
+if __name__ == "__main__":
+    config = load_config()
+    raw_data_folder, processed_data_folder = ensure_directories(config)
+    unique_players = {}
+
+    for dataset in config["AUTDProjectFiles"]:
+        input_file = os.path.join(raw_data_folder, dataset["input_file"])
+        output_file = os.path.join(processed_data_folder, dataset["output_file"])
+        process_dataset(input_file, output_file, unique_players)
