@@ -1,3 +1,3 @@
 # atlutdproject
 
-**Please Navigate to the master branch. Apologies**
+**Please Navigate to the Master Branch. Apologies**
