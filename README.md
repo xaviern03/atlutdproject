@@ -56,6 +56,7 @@ This project automates the ingestion, cleansing, processing, and storage of give
    - Schema Creation:
      '''bash
      python aud_schema.py
+   - Ensure aud_cleanse.py, aud_schema.py, raw_data, processed_data, and config.json are in the root folder before running.
 4. Upload processed data to Databricks
   - Logged into Databricks workspace.
   - Created cluster and configured it with:
