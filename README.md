@@ -71,6 +71,15 @@ This project automates the ingestion, cleansing, processing, and storage of give
 ---
 
 ## How to Access Processed Data
+### Clone Repository
+To start, clone the repository to your local machine or directly into Databricks Workspace:
+git clone https://github.com/xaviern03/atlutdproject.git
+
+## Run the Databricks Notebook
+1. Upload the Databricks notebook from the repository into your workspace (aud_pipeline_automation.ipynb)
+2. Attach the notebook to your cluster
+3. Execute the notebook to create Delta Tables and query the data
+
 ### Delta Tables
 - **Location**: Available in Databricks and registered as tables:
   - match_data
@@ -90,6 +99,9 @@ This project automates the ingestion, cleansing, processing, and storage of give
   import pandas as pd
   df = pd.read_csv("/dbfs/FileStore/tables/processed_match_data.csv")
   print(df.head())
+
+  ## Visualization
+  - The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation. 
 
   
     
