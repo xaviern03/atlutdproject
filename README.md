@@ -30,7 +30,7 @@ This project automates the ingestion, cleansing, processing, and storage of give
 ## Assumptions
   - Missing values are left as null for better accuracy in future analysis.
   - 'player_id' is globally unique and consistent across datasets.
-  - Datasets inputted follow a specific structure (MM/DD/YYYY or MM-DD-YYYY)
+  - Datasets inputted follow a specific date structure (MM/DD/YYYY or MM-DD-YYYY)
   - Delta Tables are used for querying and analytics to ensure scalability and reliability.
 
 ---
