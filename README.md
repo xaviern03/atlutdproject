@@ -7,7 +7,7 @@ This project automates the ingestion, cleansing, processing, and storage of give
 - Automate the ingestion and cleansing of raw datasets, ensuring consistency and quality through all processed data.
 - Create a pipeline that processes data into clean formats for analytics and visualization.
 - Store processed data in Delta Tables for efficient querying and reporting.
-- Create a visualization for analysis to demonstrate how the data can be used for analysis
+- Create a visualization for analysis to demonstrate how the data can be used.
 
 ---
 
