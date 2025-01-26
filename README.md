@@ -95,11 +95,6 @@ git clone https://github.com/xaviern03/atlutdproject.git
   ### Processed CSV Files
 - **Location**:
   - Databricks DBFS: /dbfs/FileStore/tables/processed_*.csv
-- **Access Example**
-  '''python
-  import pandas as pd
-  df = pd.read_csv("/dbfs/FileStore/tables/processed_match_data.csv")
-  print(df.head())
 
 ## Visualization
 - The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation.
