@@ -105,7 +105,7 @@ git clone https://github.com/xaviern03/atlutdproject.git
 - The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation.
     ![Top Players by Goals Added](topgadded.PNG)
 (Not sure why the bar chart lines were very skinny in the .html file so provided the visual as an image)
-Query Used to create visualization in DataBricks:
+**Query Used to create visualization in DataBricks**:
  1. Run the following query:
      ```sql
      SELECT 
