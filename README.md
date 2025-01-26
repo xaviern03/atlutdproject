@@ -44,18 +44,21 @@ This project automates the ingestion, cleansing, processing, and storage of give
 
 ## How to Run Pipeline
   1. Clone the repository:
-     '''bash
+     ```bash
      git clone https://github.com/xaviern03/atlutdproject.git
+     ```
 2. Set up your environment:
    - Ensure Python 3.8+ and necessary libraries are installed (pandas, sqlite3, os, json, PySpark)
    - Install Spark if running locally
 3. Run the Python scripts:
    - Data Cleansing:
-     '''bash
+     ```bash
      python aud_cleanse.py
+     ```
    - Schema Creation:
-     '''bash
+     ```bash
      python aud_schema.py
+     ```
    - Ensure aud_cleanse.py, aud_schema.py, raw_data, processed_data, and config.json are in the root folder before running.
 4. Upload processed data to Databricks
   - Logged into Databricks workspace.
@@ -66,8 +69,9 @@ This project automates the ingestion, cleansing, processing, and storage of give
 5. Run the Databricks notebook:
   - Execute the pipeline to create Delta Tables
   - Verify with:
-    '''sql
+    ```sql
     SELECT * FROM match_data LIMIT 10;
+    ```
 
 ---
 
@@ -89,8 +93,9 @@ git clone https://github.com/xaviern03/atlutdproject.git
   - player_goals_data
 
 - **Query Example**:
-  '''sql
+  ```sql
   SELECT * FROM player_pass_data LIMIT 10;
+  ```
 
   ### Processed CSV Files
 - **Location**:
@@ -99,6 +104,22 @@ git clone https://github.com/xaviern03/atlutdproject.git
 ## Visualization
 - The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation.
     ![Top Players by Goals Added](topgadded.PNG)
+
+Query Used to create visualization in DataBricks:
+ 1. Run the following query:
+     ```sql
+     SELECT 
+         player_id,
+         player,
+         team,
+         season,
+         goals_added
+     FROM 
+         player_goals_data
+     ORDER BY 
+         goals_added DESC
+     LIMIT 10;
+     ```
 
 ## Challenges
 1. **First Time Using Databricks**
