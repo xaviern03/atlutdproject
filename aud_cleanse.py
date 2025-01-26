@@ -14,6 +14,12 @@ processed_data_folder = config["processed_data_folder"]
 if not os.path.exists(processed_data_folder):
     os.makedirs(processed_data_folder)
 
+mapping_file = "./processed_data/player_mapping.csv"
+if os.path.exists(mapping_file):
+    player_mapping = pd.read_csv(mapping_file).set_index("Player").to_dict()["player_id"]
+else:
+    player_mapping = {}
+
 # Processes each dataset for configuration
 for dataset in config["AUTDProjectFiles"]:
     input_file = os.path.join(raw_data_folder, dataset["input_file"])
@@ -29,8 +35,16 @@ for dataset in config["AUTDProjectFiles"]:
 
         df = pd.read_csv(input_file)
 
-        # Updates column headers for automation step
-        df.columns = [col.replace(" ", "_").replace(",", "_") for col in df.columns]
+        # Creates unique player id for each new player recognized and maps player names to the player's unique id number
+        if 'Player' in df.columns:
+            new_players = {player: len(player_mapping) + i + 1 for i, player in enumerate(df['Player'].unique()) if player not in player_mapping}
+            player_mapping.update(new_players)
+            df['player_id'] = df['Player'].map(player_mapping)
+
+        pd.DataFrame(list(player_mapping.items()), columns=["Player", "player_id"]).to_csv(mapping_file, index=False)
+
+        # Updates column headers for automation step delta tables
+        df.columns = [col.replace(" ", "_").replace(",", "_").replace("%", "_Percent") for col in df.columns]
 
         # Converts dates from MM/DD/YYYY to the standardized YYYY-MM-DD format for consistency if needed
         if 'Date' in df.columns:
@@ -48,7 +62,13 @@ for dataset in config["AUTDProjectFiles"]:
         for col in monetary_cols:
             df[col] = df[col].replace({'\$': '', ',': ''}, regex=True).astype(float)
 
+        # Clean percentage columns, removing % and converting to float
+        percent_cols = [col for col in df.columns if df[col].astype(str).str.contains('%').any()]
+        for col in percent_cols:
+            df[col] = df[col].str.replace('%', '', regex=False).astype(float)
+
         df = df.drop_duplicates()
+        df = df.dropna(axis=1, how='all')
         df.to_csv(output_file, index=False)
         print(f"Processed data saved to {output_file}\n")
 

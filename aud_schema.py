@@ -38,4 +38,44 @@ CREATE TABLE IF NOT EXISTS salary_data (
 );
 """
 
+create_player_goal_data = """
+CREATE TABLE IF NOT EXISTS player_goal_data (
+    player_id INTEGER,
+    player TEXT,
+    team TEXT,
+    season INTEGER,
+    position TEXT,
+    minutes INTEGER,
+    dribbling REAL,
+    fouling REAL,
+    interrupting REAL,
+    passing REAL,
+    receiving REAL,
+    shooting REAL,
+    goals_added REAL,
+    PRIMARY KEY (player_id, season, team)
+);
+"""
+create_player_pass_data = """
+CREATE TABLE IF NOT EXISTS player_pass_data (
+    player_id INTEGER PRIMARY KEY,
+    player TEXT,
+    team TEXT,
+    season INTEGER,
+    position TEXT,
+    minutes INTEGER,
+    passes INTEGER,
+    pass_percent REAL,
+    xpass_percent REAL,
+    pass_score REAL,
+    p_score_per_100 REAL,
+    avg_distance REAL,
+    avg_pass_vert REAL,
+    touch_perc REAL,
+    games_played INTEGER,
+    PRIMARY KEY (player_id, season, team) 
+
+);
+"""
+
 

@@ -7,6 +7,14 @@
         {
             "input_file": "american_soccer_analysis_mls_salaries_players_2025-01-23.csv",
             "output_file": "processed_salary_data_2025-01-23.csv"
+        },
+        {
+            "input_file": "american_soccer_analysis_mls_goals-added_players_2025-01-25.csv",
+            "output_file": "processed_players_goals_data_2025-01-23.csv"
+        },
+        {
+            "input_file": "american_soccer_analysis_mls_xpass_players_2025-01-25.csv",
+            "output_file": "processed_players_pass_data_2025-01-23.csv"
         }
     ],
     "raw_data_folder": "./raw_data/",
