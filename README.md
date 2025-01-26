@@ -102,7 +102,7 @@ git clone https://github.com/xaviern03/atlutdproject.git
 
   ## Visualization
   - The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation.
-    ![Top Players by Goals Added](topgadded.png)
+    ![Top Players by Goals Added](topgadded.PNG)
 
   
     
