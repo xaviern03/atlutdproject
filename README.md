@@ -100,9 +100,20 @@ git clone https://github.com/xaviern03/atlutdproject.git
   df = pd.read_csv("/dbfs/FileStore/tables/processed_match_data.csv")
   print(df.head())
 
-  ## Visualization
-  - The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation.
+## Visualization
+- The visualization for "Top Players by Goals Added" can be found in the notebook: `aud_pipeline_automation.html`, It highlights the top 10 players sorted by their `goals_added` metric, using a bar chart for easy interpretation.
     ![Top Players by Goals Added](topgadded.PNG)
+
+## Challenges
+1. **First Time Using Databricks**
+   - This was my first experience using Databricks and I had to familiarize myself with its features, including Delta Tables, Clusters, and Workflow Automation.
+   - I quickly learned how to set up and run pipelines, troubleshoot schema mismatches, and integrate Databricks with GitHub. The project gave me good practical experience and confidence in using Databricks for scalable projects in the future.
+3. **Handling Schema Mismatches**
+   - Schema mismatches occured when new columns were added like 'player_id'. To solve this I enabled schema evolution in Delta Tables using .option("mergeSchema", "true")
+4. **Generating Consistent player_id's**
+   - Players appeared in multiple datasets with different IDs. To fix this I used global mapping to ensure the player_id's stayed consistent.
+     
+
 
   
     
